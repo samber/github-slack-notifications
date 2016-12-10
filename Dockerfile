@@ -7,9 +7,9 @@ FROM python:3
 
 MAINTAINER Samuel BERTHE <contact@samuel-berthe.fr>
 
-RUN mkdir /usr/src/app
-COPY . /usr/src/app
+CMD ["python", "/usr/src/app/app.py"]
 
 RUN pip install requests
 
-CMD ["python", "/usr/src/app/app.py"]
+RUN mkdir /usr/src/app
+COPY . /usr/src/app

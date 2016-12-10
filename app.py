@@ -19,9 +19,19 @@ while True:
     notifications = requests.get("https://api.github.com/notifications", headers=headers)
     if notifications.status_code is 200:
         for notif in notifications.json():
-            url = requests.get(notif["subject"]["url"], headers=headers).json()["html_url"]
+            url = ""
+            author = ""
+            details = requests.get(notif["subject"]["url"], headers=headers)
+            if details.status_code == 200:
+                try:
+                    url = details.json()["html_url"]
+                    author = details.json()["user"]["login"]
+                except:
+                    pass
             payload = {
-                "text": "_" + notif["subject"]["type"] + "_ =>   " + notif["repository"]["full_name"] + "    -    *" + notif["subject"]["title"] + "*\n" + url
+                "username": "Github",
+                "icon_url": "https://assets-cdn.github.com/images/modules/logos_page/GitHub-Mark.png",
+                "text": "_" + notif["subject"]["type"] + "_ =>   " + notif["repository"]["full_name"] + "    -    *" + notif["subject"]["title"] + "*\n" + author + "  -  " + url
             }
             requests.post(slack_webhook, json.dumps(payload), headers={'content-type': 'application/json'})
 
